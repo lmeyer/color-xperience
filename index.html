@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>The Xperience</title>
+		<script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+		<script language="JavaScript" type="text/javascript" src="https://raw.github.com/jquery/jquery-color/master/jquery.color.js"></script>
+
+		<script>
+			$(function(){
+
+			});
+		</script>
+	</head>
+	<body class="playground" style="margin: 0; padding: 0; overflow: hidden;">
+		<script type="text/javascript">
+
+			$(document).ready(function() {
+				var color = randColor();
+				$('.playground').css('background-color', color);
+				$('.playground').attr('data-color', color);
+				$('.playground').css('width', $(window).width());
+				$('.playground').css('height', $(window).height());
+				$('.playground').css('color', $.Color(color).contrastColor());
+
+				var title = $('<h1 class="title" style="font-size: 80px; font-family: Calibri, serif; text-align:center; margin-top:'+$(window).height()/3+'px">Click and hold</h1>');
+				$('.playground').append(title);
+
+
+
+				var intervalId;
+				var i = 0;
+				var circle;
+				$(".playground").mousedown(function(e) {
+					//if(!$(e.target).hasClass('playground')) return;
+					$('.title').remove();
+				    intervalId = setInterval(function(){
+				    	i++
+				    	if(1 == i) {
+				    		circle = createCircle(e)
+				    	} else {
+				    		scaleCircle(circle);
+				    		calculateColors(circle);
+				    	}
+				    }, 10);
+				}).mouseup(function() {
+				    clearInterval(intervalId);
+				    clearDataColors();
+				    i = 0;
+				    circle = null;
+				});
+			});
+
+			function randColor(){
+				//return '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+				return '#'+Math.floor(Math.random()*16777215).toString(16);
+			}
+
+			function createCircle(e){
+				var left = e.pageX;
+				var top = e.pageY;
+				var color = randColor();
+				var circle = $('<div class="circle" id="'+Math.random()+'" data-color="'+color+'" style="position: absolute; height: 0; width: 0; border-radius: 0; background-color:'+color+'; left:'+left+'px;top:'+top+'px"></div>');
+				$(".playground").append(circle)
+				return circle;
+			}
+
+			function scaleCircle(el){
+				el.css('height', el.height()+4);
+				el.css('width', el.width()+4);
+				el.css('left', el.position().left-2);
+				el.css('top', el.position().top-2);
+				el.css('borderRadius', el.height());
+			}
+
+			function calculateColors(el){
+				$('.playground, .playground *').each(function(){
+					if(!$(this).hasClass('playground')) {
+						if(!$(this).hasClass('circle')) {
+							return;
+						}
+					}
+					if($(this).attr('id') == el.attr('id')) {
+						return;
+					}
+
+					var curColor = $.Color(el.attr('data-color'));
+					var elColor = $.Color($(this).attr('data-color'));
+
+					var curArea = calculateArea(el);
+					var elArea = calculateArea($(this));
+
+					var red = (elColor.red()*elArea + curColor.red()*curArea)/(elArea+curArea);
+					var green = (elColor.green()*elArea + curColor.green()*curArea)/(elArea+curArea);
+					var blue = (elColor.blue()*elArea + curColor.blue()*curArea)/(elArea+curArea);
+
+					elColor = elColor.red(red);
+					elColor = elColor.green(green);
+					elColor = elColor.blue(blue);
+
+					$(this).css('background-color', elColor);
+				});
+			}
+
+			function clearDataColors(){
+				$('.playground, .playground *').each(function(){
+					if(!$(this).hasClass('playground')) {
+						if(!$(this).hasClass('circle')) {
+							return;
+						}
+					}
+
+					$(this).attr('data-color', $(this).css('background-color'))
+				});
+			}
+
+			function calculateArea(el) {
+				if(el.hasClass('circle')) {
+					return (el.height()/2)*(el.height()/2)*Math.PI;
+				} else {
+					var lessArea = 0;
+					$('.playground *').each(function(){
+						if($(this).hasClass('circle')) {
+							lessArea += calculateArea($(this));
+						}
+					});
+					return el.height()*el.width()-lessArea;
+				}
+			}
+
+			jQuery.Color.fn.contrastColor = function() {
+	    		var r = this._rgba[0], g = this._rgba[1], b = this._rgba[2];
+			    return (((r*299)+(g*587)+(b*144))/1000) >= 131.5 ? "black" : "white";
+			};
+
+		</script>
+
+	</body>
+</html>
