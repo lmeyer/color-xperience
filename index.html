@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>The Xperience</title>
-		<script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
-		<script language="JavaScript" type="text/javascript" src="https://raw.github.com/jquery/jquery-color/master/jquery.color.js"></script>
+		<script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+		<script   src="https://code.jquery.com/color/jquery.color-2.1.2.js"   integrity="sha256-1Cn7TdfHiMcEbTuku97ZRSGt2b3SvZftEIn68UMgHC8="   crossorigin="anonymous"></script>
 
 		<script>
 			$(function(){
@@ -23,7 +23,7 @@
 				$('.playground').css('height', $(window).height());
 				$('.playground').css('color', $.Color(color).contrastColor());
 
-				var title = $('<h1 class="title" style="font-size: 80px; font-family: Calibri, serif; text-align:center; margin-top:'+$(window).height()/3+'px">Click and hold</h1>');
+				var title = $('<h1 class="title" style="font-size: 80px; font-family: Calibri, serif; text-align:center; padding-top:'+$(window).height()/3+'px">Click and hold</h1>');
 				$('.playground').append(title);
 
 
